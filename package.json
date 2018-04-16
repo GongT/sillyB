@@ -1,0 +1,28 @@
+{
+	"name": "@gongt/silly-b",
+	"version": "0.0.1",
+	"description": "a very sb package",
+	"main": "dist/index.js",
+	"scripts": {
+		"start": "./scripts/start.sh",
+		"test": "./scripts/test.sh"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/GongT/sillyB.git"
+	},
+	"keywords": [
+		"library"
+	],
+	"engines": {
+		"node": ">=8",
+		"npm": ">4"
+	},
+	"author": "GongT <gongteng524702837@gmail.com>",
+	"license": "MIT",
+	"homepage": "https://github.com/GongT/sillyB#readme",
+	"devDependencies": {
+		"@types/node": "^9.6.5",
+		"typescript": "^2.8.1"
+	}
+}
