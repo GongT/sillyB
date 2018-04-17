@@ -1,6 +1,6 @@
 {
 	"name": "@gongt/silly-b",
-	"version": "0.0.1",
+	"version": "0.0.2",
 	"description": "a very sb package",
 	"main": "dist/index.js",
 	"scripts": {
@@ -23,6 +23,7 @@
 	"homepage": "https://github.com/GongT/sillyB#readme",
 	"devDependencies": {
 		"@types/node": "^9.6.5",
+		"@types/validator": "^9.4.0",
 		"typescript": "^2.8.1"
 	}
 }
