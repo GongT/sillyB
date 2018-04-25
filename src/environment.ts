@@ -1,6 +1,7 @@
 declare const window: any;
 declare const process: any;
 declare const global: any;
+
 export const IS_BROWSER = typeof window === 'object';
 export const IS_NODE = typeof process === 'object';
 /** @deprecated */

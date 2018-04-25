@@ -1,3 +1,5 @@
+import { nameFunction } from './debuggable';
+
 export interface MyCallback<Argument> {
 	displayName?: string;
 	
@@ -9,12 +11,7 @@ export class CallbackList<Argument> {
 	
 	add(item: MyCallback<Argument>, name?: string) {
 		if (name) {
-			Object.defineProperty(item, 'displayName', {
-				value: name,
-				enumerable: true,
-				writable: true,
-				configurable: true,
-			});
+			nameFunction(name, item);
 		}
 		return this.list.push(item);
 	}

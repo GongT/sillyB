@@ -9,31 +9,6 @@ const yellow: [number, number] = [3, 39];
 const cyan: [number, number] = [6, 39];
 const green: [number, number] = [2, 39];
 
-const TerminalColors: ColorMap = {
-	EMERG: terminal(bold, red),
-	ERROR: terminal(red),
-	WARN: terminal(magenta),
-	NOTICE: terminal(yellow),
-	INFO: terminal(cyan),
-	DEBUG: terminal(reset),
-	DATA: terminal(dim, green),
-	SILLY: terminal(dim),
-	reset: terminal(reset),
-};
-
-const BrowserColors: ColorMap = {
-	EMERG: browser('color:red;font-weight:bold;font-size:xx-large;'),
-	ERROR: browser('color:red;'),
-	WARN: browser('color:magenta;'),
-	NOTICE: browser('color:#ff5400;'),
-	INFO: browser('color:#4fbdff;'),
-	DEBUG: browser('color:#626262;'),
-	DATA: browser('color:#01a900;'),
-	SILLY: browser('color:#c1c1c1;'),
-	reset: browser('color:normal'),
-};
-
-export const Colors = IS_NODE? TerminalColors : BrowserColors;
 export const ColorPlaceHolder = IS_NODE? '%s' : '%c';
 
 export interface ColorMap {
@@ -65,3 +40,30 @@ function browser(str: string): [string, string] {
 	}).join(';');
 	return [str, reset];
 }
+
+
+const TerminalColors: ColorMap = {
+	EMERG: terminal(bold, red),
+	ERROR: terminal(red),
+	WARN: terminal(magenta),
+	NOTICE: terminal(yellow),
+	INFO: terminal(cyan),
+	DEBUG: terminal(reset),
+	DATA: terminal(dim, green),
+	SILLY: terminal(dim),
+	reset: terminal(reset),
+};
+
+const BrowserColors: ColorMap = {
+	EMERG: browser('color:red;font-weight:bold;font-size:xx-large;'),
+	ERROR: browser('color:red;'),
+	WARN: browser('color:magenta;'),
+	NOTICE: browser('color:#ff5400;'),
+	INFO: browser('color:#4fbdff;'),
+	DEBUG: browser('color:#626262;'),
+	DATA: browser('color:#01a900;'),
+	SILLY: browser('color:#c1c1c1;'),
+	reset: browser('color:normal'),
+};
+
+export const Colors = IS_NODE? TerminalColors : BrowserColors;

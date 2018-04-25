@@ -98,12 +98,10 @@ export class Timer<T> extends EventEmitter<'error'> {
 			try {
 				this.emit('error', e);
 			} catch (e) {
-				console.error('\x1B[0;38;5;9m%s\x1B[0m', e.stack);
-				process.exit(1);
+				throw e;
 			}
 		} else {
-			console.error('\x1B[0;38;5;9m%s\x1B[0m', e.stack);
-			process.exit(1);
+			throw e;
 		}
 	}
 	

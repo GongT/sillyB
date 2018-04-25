@@ -20,17 +20,23 @@ export class QueueWait {
 	}
 	
 	lock() {
-		this.locked = true;
-		if (this.count === 0) {
-			return this.callback(null, true);
+		if (!this.locked) {
+			this.locked = true;
+			if (this.count === 0) {
+				return this.callback(null, true);
+			}
 		}
 	}
 	
-	pop() {
+	pop(error?: Error) {
 		if (!this.locked) {
 			return this.callback(new TypeError(`QueueWait: [${this.title}] must not pop before lock.`));
 		}
 		this.count--;
+		if (error) {
+			this.count = -1;
+			return this.callback(error, false);
+		}
 		if (this.count === 0) {
 			return this.callback(null, true);
 		}
@@ -55,5 +61,9 @@ export class QueueWait {
 		setTimeout(() => {
 			this.lock();
 		}, 0);
+	}
+	
+	get finished() {
+		return this.done;
 	}
 }

@@ -1,3 +1,5 @@
+// !!! Never import anything
+
 export enum LOG_LEVEL {
 	EMERG = 0,
 	ERROR,

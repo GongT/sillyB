@@ -1,45 +1,25 @@
-import { isomorphicGlobal } from '../environment';
+import { IS_NODE, isomorphicGlobal } from '../environment';
 
 export type KVM = {[id: string]: any};
 
-export class GlobalVariable {
-	static get(parent: any, varName: string): any {
-		return GlobalVariable.getObject(parent)[varName];
-	}
-	
-	/**
-	 * @param parent express.Request|Window
-	 **/
+const symbol = Symbol.for('@@GongT/GlobalVariable');
+
+export class GlobalVariable<DataType = KVM> {
 	static getObject(parent: any) {
-		if (!parent['__PAGE_DATA__']) {
-			Object.defineProperty(parent, '__PAGE_DATA__', {
+		if (!parent[symbol]) {
+			Object.defineProperty(parent, symbol, {
 				value: {},
 				configurable: false,
 				enumerable: false,
 				writable: false,
 			});
 		}
-		return parent['__PAGE_DATA__'];
+		return parent[symbol];
 	}
 	
-	static set(parent: any, varName: KVM): void;
-	
-	static set(parent: any, varName: string, content: any): void;
-	
-	static set(parent: any, varName: KVM|string, content?: any): void {
-		if (typeof varName === 'string') {
-			return GlobalVariable.getObject(parent)[varName] = content;
-		} else {
-			Object.assign(GlobalVariable.getObject(parent), varName);
-		}
-	}
-	
-	private data: any;
+	private data: DataType;
 	private parent: any;
 	
-	/**
-	 * @param parent express.Request|Window
-	 **/
 	constructor(parent: any = isomorphicGlobal) {
 		if (!parent) {
 			throw TypeError('GlobalVariable must have a argument, eg. express.Request object.');
@@ -52,32 +32,37 @@ export class GlobalVariable {
 			enumerable: false,
 			writable: false,
 		});
+		
+		if (IS_NODE) {
+			const {inspect} = require('util');
+			Object.assign(this, {
+				[inspect.custom]: (depth: any, opt: any) => {
+					return 'GlobalVariable'
+					       + '[<' + (typeof this.parent) + ' ' + (this.parent.constructor.name) + '>] '
+					       + inspect(this.data, {
+							...opt,
+							depth: opt.depth - depth,
+						});
+				},
+			});
+		}
 	}
 	
-	get(name: string) {
+	get<T extends keyof DataType>(name: T): DataType[T] {
 		return this.data[name];
 	}
 	
-	getObject() {
+	getObject(): DataType {
 		return this.data;
 	}
 	
-	has(name: string) {
+	has<T extends keyof DataType>(name: T): boolean {
 		return this.data.hasOwnProperty(name);
 	}
 	
-	inspect(depth: any, opt: any) {
-		return 'GlobalVariable'
-		       + '[<' + (typeof this.parent) + ' ' + (this.parent.constructor.name) + '>] '
-		       + require('util').inspect(this.data, {
-				...opt,
-				depth: opt.depth - depth,
-			});
-	}
-	
-	set(varName: KVM): void;
-	set(varName: string, value: any): void;
-	set(name: KVM|string, data?: any): void {
+	set(varName: Partial<DataType>): void;
+	set<T extends keyof DataType>(varName: T, value: DataType[T]): void;
+	set<T extends keyof DataType>(name: Partial<DataType>|T, data?: DataType[T]): void {
 		if (typeof name === 'string') {
 			this.data[name] = data;
 		} else {
@@ -91,23 +76,24 @@ export class GlobalVariable {
 	
 	toString() {
 		// !!! no line comment allow !!!
-		return `(function(data) {
-	if (window.__PAGE_DATA__) {
+		return `/* GlobalVariable */(function(data) {
+	var symbol = Symbol.for('@@GongT/GlobalVariable');
+	if (window[symbol]) {
 		if (Object.assign) {
-			Object.assign(window.__PAGE_DATA__, data);
+			Object.assign(window[symbol], data);
 		} else {
 			var i;
 			for (i in data) {
-				window.__PAGE_DATA__[i] = data[i];
+				window[symbol][i] = data[i];
 			}
 		}
 	} else {
-		window.__PAGE_DATA__ = data;
+		window[symbol] = data;
 	}
 })`.replace(/\s*([{}()])\s*/g, '$1').replace(/\s*\n\s*/g, '') + `(${this.toJSON()});`;
 	}
 	
-	unset(name: string) {
+	unset(name: keyof DataType) {
 		delete this.data[name];
 	}
 	

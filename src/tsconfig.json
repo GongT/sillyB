@@ -32,8 +32,6 @@
 		"locale": "zh-CN",
 		"preserveSymlinks": true,
 		"experimentalDecorators": true,
-		"types": [
-			"node"
-		]
+		"types": []
 	}
 }
